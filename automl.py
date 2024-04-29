@@ -66,7 +66,7 @@ class MLSystem:
         # Leer datos de prueba
         test_data = pd.read_csv(test_data_path)
         # Codificar la variable categórica 'Sex' como variables binarias
-        test_data['Sex'] = test_data['Sex'].map({'M': 1, 'F': 0})
+        test_data['Sex'] = test_data['Sex'].map({'M': 1, 'F': 0, "I":-1})
 
         # Corregir los nombres de las columnas de peso
         test_data.rename(columns={'Whole weight.1': 'Shucked weight', 'Whole weight.2': 'Viscera weight'}, inplace=True)
@@ -75,7 +75,7 @@ class MLSystem:
         predictions = predict_model(model, data=test_data)
         
         # Renombrar la columna de predicciones como "Rings"
-        predictions.rename(columns={'Label': 'Rings'}, inplace=True)
+        predictions.rename(columns={'prediction_label': 'Rings'}, inplace=True)
         
         # Guardar las predicciones en un archivo CSV
         submission_path = 'submission.csv'
