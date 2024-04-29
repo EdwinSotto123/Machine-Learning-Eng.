@@ -21,21 +21,30 @@ class MLSystem:
     def preprocess_data(self, data):
      try:
         # Codificar la variable categórica 'Sex' como variables binarias
-        data['Sex'] = data['Sex'].map({'M': 1, 'F': 0})
+        data['Sex'] = data['Sex'].map({'M': 1, 'F': 0,"I":-1})
 
         # Corregir los nombres de las columnas de peso
         data.rename(columns={'Whole weight.1': 'Shucked weight', 'Whole weight.2': 'Viscera weight'}, inplace=True)
 
+        # Separar el 20% de los datos para el conjunto de prueba
+        test_data = data.sample(frac=0.2, random_state=42)
+
+        # Eliminar los datos de prueba del conjunto de entrenamiento
+        train_data = data.drop(test_data.index)
+
+        # Configurar PyCaret en el conjunto de entrenamiento
         reg = setup(
-            data=data,
+            data=train_data,
             target="Rings",
             numeric_features=["Sex", "Length", "Diameter", "Height", "Whole weight", "Shucked weight", "Viscera weight", "Shell weight"],
             normalize=True,
             normalize_method="zscore",
-            polynomial_features=True
+            polynomial_features=True,
+            silent=True  # Para evitar la salida de PyCaret en la consola
         )
 
-        return reg
+        # Guardar el conjunto de prueba en un archivo CSV
+        test_data.to_csv("test_real.csv", index=False)
 
      except Exception as e:
         raise RuntimeError(f"Error def-preprocesses: {str(e)}")
@@ -65,11 +74,6 @@ class MLSystem:
       try:
         # Leer datos de prueba
         test_data = pd.read_csv(test_data_path)
-        # Codificar la variable categórica 'Sex' como variables binarias
-        test_data['Sex'] = test_data['Sex'].map({'M': 1, 'F': 0, "I":-1})
-
-        # Corregir los nombres de las columnas de peso
-        test_data.rename(columns={'Whole weight.1': 'Shucked weight', 'Whole weight.2': 'Viscera weight'}, inplace=True)
         
         # Realizar predicciones con el modelo
         predictions = predict_model(model, data=test_data)
