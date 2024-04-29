@@ -79,4 +79,4 @@ SubmitKaggle = PythonOperator(
     dag=dag,
 )
 
-GetDataKaggle >> AutoML_PyCaret >> submit_kaggle
+GetDataKaggle >> AutoML_PyCaret >> SubmitKaggle
