@@ -54,7 +54,7 @@ def  AutoML_PyCaret():
     mySystem.run_entire_workflow("data/train.csv", "data/test.csv")
     return None
 
-def submit_kaggle(api, submission_file ="submission_0.csv", message="First submission", competition="playground-series-s4e4"):
+def submit_kaggle(api, submission_file ="submission.csv", message="First submission", competition="playground-series-s4e4"):
     
     try:
         api.competition_submit(file_name=submission_file, message=message, competition=competition)
